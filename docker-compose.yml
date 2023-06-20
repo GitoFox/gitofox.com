@@ -1,17 +1,6 @@
-version: '3'
+version: "3"
 services:
-  backend:
-    build: ./path-to-your-app
-    volumes:
-      - ./path-to-your-app:/app
-    environment:
-      - HOST=0.0.0.0
-      - PORT=3000
-  frontend:
-    build: ./path-to-nginx-directory
-    volumes:
-      - ./path-to-nginx-directory:/etc/nginx
-      - /path-to-your-ssl-certificate:/etc/nginx/ssl
+  web:
+    build: .
     ports:
-      - "80:80"
-      - "443:443"
+     - "8080:8080"
