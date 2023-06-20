@@ -45,7 +45,7 @@ app.get('/encuestadores/:rut', (req, res) => {
           sinImagen = true; // Establecer la variable sinImagen en true
         }
 
-        imagenURL = 'http://3.209.219.82:3000/img/' + path.basename(imagenPath); // Obtén solo el nombre del archivo de la imagen
+        imagenURL = 'http://3.211.226.236:3000/img/' + path.basename(imagenPath); // Obtén solo el nombre del archivo de la imagen
         encuestador.imagenURL = imagenURL;
         encuestador.sinImagen = sinImagen; // Agregar la variable sinImagen al encuestador
 
