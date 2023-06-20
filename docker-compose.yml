@@ -1,13 +1,17 @@
 version: '3'
 services:
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    build: ./path-to-your-app
+    volumes:
+      - ./path-to-your-app:/app
     environment:
       - HOST=0.0.0.0
       - PORT=3000
+  frontend:
+    build: ./path-to-nginx-directory
     volumes:
-      - .:/app
+      - ./path-to-nginx-directory:/etc/nginx
+      - /path-to-your-ssl-certificate:/etc/nginx/ssl
+    ports:
+      - "80:80"
+      - "443:443"
