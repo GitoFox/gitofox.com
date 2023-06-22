@@ -1,23 +1,26 @@
-version: '3'
+version: "3"
 services:
   api:
-    build:
+    build: 
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./:/usr/src/app
-    ports:
-      - '3000:3000'
-      - '3443:3443'
-    environment:
-      - HTTP_PORT=3000
-      - HTTPS_PORT=3443
+      - ./img:/app/img
+      - /etc/letsencrypt:/etc/letsencrypt
+    networks:
+      - webnet
   nginx:
-    build:
+    build: 
       context: .
       dockerfile: Dockerfile.nginx
     ports:
-      - '80:80'
-      - '443:443'
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - api
+    networks:
+      - webnet
+networks:
+  webnet:
