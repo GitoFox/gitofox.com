@@ -4,9 +4,22 @@ const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
 const moment = require('moment');
+const http = require('http');
+const https = require('https');
 
-const app = express();
-const PORT = 3000;
+
+const HTTP_PORT = process.env.HTTP_PORT || 3000;
+const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
+
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/chain.pem', 'utf8');
+
+const credentials = {
+	key: privateKey,
+	cert: certificate,
+	ca: ca
+};
 
 
 // Middleware para parsear el cuerpo de las solicitudes como JSON
@@ -87,7 +100,15 @@ app.get('/encuestadores/:rut', (req, res) => {
 // Ruta para servir las imágenes de los encuestadores
 app.use('/img', express.static(path.join(__dirname, 'img')));
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-  console.log(`Servidor escuchando en el puerto ${PORT}`);
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+// Iniciar el servidor HTTP
+httpServer.listen(HTTP_PORT, () => {
+  console.log(`Servidor HTTP escuchando en el puerto ${HTTP_PORT}`);
+});
+
+// Iniciar el servidor HTTPS
+httpsServer.listen(HTTPS_PORT, () => {
+  console.log(`Servidor HTTPS escuchando en el puerto ${HTTPS_PORT}`);
 });
