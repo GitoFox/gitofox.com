@@ -13,13 +13,11 @@ const HTTP_PORT = process.env.HTTP_PORT || 3000;
 const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
 
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/privkey.pem', 'utf8');
-const certificate = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/cert.pem', 'utf8');
-const ca = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/chain.pem', 'utf8');
+const fullChain = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/fullchain.pem', 'utf8');
 
 const credentials = {
 	key: privateKey,
-	cert: certificate,
-	ca: ca
+	cert: fullChain
 };
 
 
@@ -59,7 +57,7 @@ app.get('/encuestadores/:rut', (req, res) => {
           sinImagen = true; // Establecer la variable sinImagen en true
         }
 
-        imagenURL = 'http://3.211.226.236:3000/img/' + path.basename(imagenPath); // Obtén solo el nombre del archivo de la imagen
+        imagenURL = 'https://3.211.226.236/img/' + path.basename(imagenPath); // Obtén solo el nombre del archivo de la imagen
         encuestador.imagenURL = imagenURL;
         encuestador.sinImagen = sinImagen; // Agregar la variable sinImagen al encuestador
 
