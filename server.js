@@ -9,8 +9,7 @@ const https = require('https');
 const app = express();
 
 
-const HTTP_PORT = process.env.HTTP_PORT || 3000;
-const HTTPS_PORT = process.env.HTTPS_PORT || 3443;
+
 
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/privkey.pem', 'utf8');
 const fullChain = fs.readFileSync('/etc/letsencrypt/live/gitofox.com/fullchain.pem', 'utf8');
@@ -21,15 +20,8 @@ const credentials = {
 };
 
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
-
+// Middleware para parsear el cuerpo de las solicitudes como JSON
+app.use(express.json());
 app.use(cors({
   origin: '*',
   exposedHeaders: 'Referer'
@@ -106,15 +98,8 @@ app.get('/encuestadores/:rut', (req, res) => {
 // Ruta para servir las imágenes de los encuestadores
 app.use('/img', express.static(path.join(__dirname, 'img')));
 
-const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
-// Iniciar el servidor HTTP
-httpServer.listen(HTTP_PORT, () => {
-  console.log(`Servidor HTTP escuchando en el puerto ${HTTP_PORT}`);
-});
-
-// Iniciar el servidor HTTPS
-httpsServer.listen(HTTPS_PORT, () => {
-  console.log(`Servidor HTTPS escuchando en el puerto ${HTTPS_PORT}`);
+httpsServer.listen(443, () => {
+  console.log('Servidor Node.js en ejecución en el puerto 443 (HTTPS)');
 });
