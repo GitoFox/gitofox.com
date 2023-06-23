@@ -13,6 +13,9 @@ RUN npm install
 # Copy the application files to the working directory
 COPY . .
 
+# Copia el directorio de imágenes al contenedor
+COPY img/ /app/img/
+
 # Expose ports 3000 and 3443
 EXPOSE 3000
 
