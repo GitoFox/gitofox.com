@@ -49,7 +49,7 @@ app.get('/encuestadores/:rut', (req, res) => {
           sinImagen = true; // Establecer la variable sinImagen en true
         }
 
-        imagenURL = 'https://3.211.226.236/img/' + path.basename(imagenPath); // Obtén solo el nombre del archivo de la imagen
+        imagenURL = 'https://gitofox.com/img/' + path.basename(imagenPath); // Obtén solo el nombre del archivo de la imagen
         encuestador.imagenURL = imagenURL;
         encuestador.sinImagen = sinImagen; // Agregar la variable sinImagen al encuestador
 
