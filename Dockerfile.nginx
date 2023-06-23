@@ -1,15 +1,2 @@
-# Imagen base para Nginx
-FROM nginx:latest
-
-# Remueve la configuración por defecto de Nginx
-RUN rm /etc/nginx/conf.d/default.conf
-
-# Copia el archivo de configuración personalizado de Nginx
-COPY nginx.conf /etc/nginx/conf.d/
-
-# Expone el puerto 80 para HTTP y el puerto 443 para HTTPS
-EXPOSE 80
-EXPOSE 443
-
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
+FROM nginx
+COPY nginx.conf /etc/nginx/nginx.conf

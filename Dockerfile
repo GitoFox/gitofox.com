@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose ports 3000 and 3443
-EXPOSE 3000 3443
+EXPOSE 3000
 
 # Run the application
 CMD [ "node", "server.js" ]

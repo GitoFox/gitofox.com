@@ -1,26 +1,21 @@
-version: "3"
+version: '3'
 services:
-  api:
-    build: 
+  app:
+    build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./img:/app/img
-      - /etc/letsencrypt:/etc/letsencrypt
-    networks:
-      - webnet
+      - .:/app
+    ports:
+      - "3000:3000"
   nginx:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.nginx
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt
     ports:
       - "80:80"
       - "443:443"
-    volumes:
-      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
-      - api
-    networks:
-      - webnet
-networks:
-  webnet:
+      - app
