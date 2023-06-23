@@ -20,15 +20,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-store');
-  next();
-});
-
-app.get('/', (req, res) => {
-  res.send('Bienvendo!');
-});
-
 
 // Ruta para buscar a un encuestador por su RUT
 app.get('/encuestadores/:rut', (req, res) => {

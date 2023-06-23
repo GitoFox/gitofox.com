@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Copia el directorio de imágenes al contenedor
-COPY img/ /usr/src/app/img/
+COPY img/ /app/img/
 
 # Expose ports 3000 and 3443
 EXPOSE 3000
