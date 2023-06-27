@@ -28,7 +28,7 @@ app.use((req, res, next) => {
 app.use('/github-webhook', express.json({
   verify: (req, res, buf) => {
     const signature = req.headers['x-hub-signature-256'] || '';
-    const hmac = crypto.createHmac('sha256', 'apidesuc2023');
+    const hmac = crypto.createHmac('sha256', 'gitofox1799');
     const digest = Buffer.from('sha256=' + hmac.update(buf).digest('hex'), 'utf8');
     const checksum = Buffer.from(signature, 'utf8');
     if (checksum.length !== digest.length || !crypto.timingSafeEqual(digest, checksum)) {
