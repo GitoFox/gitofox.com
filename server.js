@@ -39,9 +39,9 @@ app.use('/github-webhook', express.json({
 
 // Ruta para manejar la notificación de webhook
 app.post('/github-webhook', (req, res) => {
-  git().pull((err, update) => {
+  git('https://github.com/GitoFox/gitofox.com.git').pull((err, update) => {
     if (update && update.summary.changes) {
-      exec('docker restart encuestadores_app_1', execCallback);
+      exec('/ruta/a/tu/script.sh', execCallback);
     }
   });
   res.status(200).send('OK');
