@@ -80,7 +80,8 @@ app.get('/encuestadores/:rut', (req, res) => {
         encuestador.sinImagen = sinImagen; // Agregar la variable sinImagen al encuestador
 
         // Leer y procesar los proyectos del encuestador
-        const proyectos = results.filter((proyecto) => proyecto.rut.trim() === rut);
+        const proyectos = results.filter((proyecto) => proyecto.rut && proyecto.rut.trim() === rut);
+
         const currentDate = moment();
 
         const proyectosActivos = [];
