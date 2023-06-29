@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/app
+      - /app/node_modules
+    environment:
+      - GITHUB_WEBHOOK_SECRET=gitofox1799
     ports:
       - "3000:3000"
   nginx:
