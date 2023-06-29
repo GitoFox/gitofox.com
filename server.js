@@ -5,15 +5,14 @@ const path = require('path');
 const cors = require('cors');
 const moment = require('moment');
 const crypto = require('crypto');
-const exec = require('child_process').exec;
 const git = require('simple-git');
+const { exec } = require('child_process');
 
 const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-// Middleware para parsear el cuerpo de las solicitudes como JSON
-app.use(express.json());
+
 app.use(cors({
   origin: '*',
   exposedHeaders: 'Referer'
@@ -28,7 +27,7 @@ app.use((req, res, next) => {
 app.use('/github-webhook', express.json({
   verify: (req, res, buf) => {
     const signature = req.headers['x-hub-signature-256'] || '';
-    const hmac = crypto.createHmac('sha256', 'gitofox1799');
+    const hmac = crypto.createHmac('sha256', process.env.GITHUB_WEBHOOK_SECRET);
     const digest = Buffer.from('sha256=' + hmac.update(buf).digest('hex'), 'utf8');
     const checksum = Buffer.from(signature, 'utf8');
     if (checksum.length !== digest.length || !crypto.timingSafeEqual(digest, checksum)) {
@@ -39,9 +38,9 @@ app.use('/github-webhook', express.json({
 
 // Ruta para manejar la notificación de webhook
 app.post('/github-webhook', (req, res) => {
-  git('C:\Users\rubio\Encuestadores API').pull((err, update) => {
+  git('/home/ubuntu/gitofox.com').pull((err, update) => {
     if (update && update.summary.changes) {
-      exec('script.sh', execCallback);
+      exec('/home/ubuntu/gitofox.com/script.sh', execCallback);
     }
   });
   res.status(200).send('OK');
@@ -51,6 +50,7 @@ function execCallback(err, stdout, stderr) {
   if (stdout) console.log(stdout);
   if (stderr) console.log(stderr);
 }
+
 
 // Ruta para buscar a un encuestador por su RUT
 app.get('/encuestadores/:rut', (req, res) => {
