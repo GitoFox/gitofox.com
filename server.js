@@ -39,12 +39,21 @@ app.post('/github-webhook', (req, res) => {
     }
 
     // Aquí puedes manejar los distintos tipos de eventos
-    if(req.body.ref === 'refs/heads/main') {  // Adjust 'main' to whatever branch you want to handle
+    if(req.body.ref === '/app') {  // Adjust 'main' to whatever branch you want to handle
         if(req.headers['x-github-event'] === "push") {
             console.log("Received push event");
             // Aquí es donde ejecutarías el código para manejar el evento
             // Por ejemplo, podrías tirar y reiniciar tu aplicación, borrar la caché, etc.
-        }
+            exec('docker-compose down && docker-compose pull && docker-compose up -d', (error, stdout, stderr) => {
+              if (error) {
+                  console.error(`exec error: ${error}`);
+                  return;
+              }
+              console.log(`stdout: ${stdout}`);
+              console.error(`stderr: ${stderr}`);
+          });
+      }
+          
     }
     
     // Respond to GitHub that we received the webhook
