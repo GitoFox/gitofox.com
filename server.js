@@ -3,6 +3,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const moment = require('moment');
 const crypto = require('crypto');
 const git = require('simple-git');
@@ -11,11 +12,6 @@ const { exec } = require('child_process');
 const app = express();
 
 const PORT = process.env.PORT || 3000;
-
-const currentFilePath = __filename;
-const currentDirectory = path.dirname(currentFilePath);
-
-console.log('Path del archivo actual:', currentDirectory);
 
 
 app.use(cors({
@@ -28,36 +24,32 @@ app.use((req, res, next) => {
   next();
 });
 
-console.log('GITHUB_WEBHOOK_SECRET:', process.env.GITHUB_WEBHOOK_SECRET);
+const secret = 'gitofox1799'; // your github webhook secret
 
-// Middleware para verificar la firma de la solicitud
-app.use('/github-webhook', express.json({
-  verify: (req, res, buf) => {
-    const signature = req.headers['x-hub-signature-256'] || '';
-    const hmac = crypto.createHmac('sha256', process.env.GITHUB_WEBHOOK_SECRET);
-    const digest = Buffer.from('sha256=' + hmac.update(buf).digest('hex'), 'utf8');
-    const checksum = Buffer.from(signature, 'utf8');
-    if (checksum.length !== digest.length || !crypto.timingSafeEqual(digest, checksum)) {
-      return res.status(403).send('Signature not verified');
-    }
-  }
-}));
+app.use(bodyParser.json());
 
-// Ruta para manejar la notificación de webhook
 app.post('/github-webhook', (req, res) => {
-  git('/app').pull((err, update) => {
-    if (update && update.summary.changes) {
-      exec('/script.sh', execCallback);
+    let signature = req.headers['x-hub-signature'];
+    let payload = JSON.stringify(req.body);
+    let hash = crypto.createHmac('sha1', secret).update(payload).digest('hex');
+    
+    if (signature !== `sha1=${hash}`) {
+        res.status(403).send('Invalid signature');
+        return;
     }
-  });
-  res.status(200).send('OK');
+
+    // Aquí puedes manejar los distintos tipos de eventos
+    if(req.body.ref === 'refs/heads/main') {  // Adjust 'main' to whatever branch you want to handle
+        if(req.headers['x-github-event'] === "push") {
+            console.log("Received push event");
+            // Aquí es donde ejecutarías el código para manejar el evento
+            // Por ejemplo, podrías tirar y reiniciar tu aplicación, borrar la caché, etc.
+        }
+    }
+    
+    // Respond to GitHub that we received the webhook
+    res.status(200).send('Received');
 });
-
-function execCallback(err, stdout, stderr) {
-  if (stdout) console.log(stdout);
-  if (stderr) console.log(stderr);
-}
-
 
 // Ruta para buscar a un encuestador por su RUT
 app.get('/encuestadores/:rut', (req, res) => {
