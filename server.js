@@ -24,40 +24,23 @@ app.use((req, res, next) => {
   next();
 });
 
-const secret = 'gitofox1799'; // your github webhook secret
-
-app.use(bodyParser.json());
-
-app.post('/github-webhook', (req, res) => {
-    let signature = req.headers['x-hub-signature'];
-    let payload = JSON.stringify(req.body);
-    let hash = crypto.createHmac('sha1', secret).update(payload).digest('hex');
-    
-    if (signature !== `sha1=${hash}`) {
-        res.status(403).send('Invalid signature');
-        return;
-    }
-
-    // Aquí puedes manejar los distintos tipos de eventos
-    if(req.body.ref === '/app') {  // Adjust 'main' to whatever branch you want to handle
-        if(req.headers['x-github-event'] === "push") {
-            console.log("Received push event");
-            // Aquí es donde ejecutarías el código para manejar el evento
-            // Por ejemplo, podrías tirar y reiniciar tu aplicación, borrar la caché, etc.
-            exec('docker-compose down && docker-compose pull && docker-compose up -d', (error, stdout, stderr) => {
-              if (error) {
-                  console.error(`exec error: ${error}`);
-                  return;
-              }
-              console.log(`stdout: ${stdout}`);
-              console.error(`stderr: ${stderr}`);
-          });
+app.post('/webhook', (req, res) => {
+  exec(`
+      docker stop gitofoxcom_app_1 &&
+      docker rm gitofoxcom_app_1 &&
+      git pull &&
+      docker build -t gitofoxcom_app . &&
+      docker run -d --name gitofoxcom_app_1 gitofoxcom_app
+  `, (err, stdout, stderr) => {
+      if (err) {
+          // Algo salió mal
+          console.error(err);
+      } else {
+          // Todo bien
+          console.log(stdout);
       }
-          
-    }
-    
-    // Respond to GitHub that we received the webhook
-    res.status(200).send('Received');
+  });
+  res.sendStatus(200);
 });
 
 // Ruta para buscar a un encuestador por su RUT
