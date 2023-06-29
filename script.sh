@@ -1,4 +1,10 @@
 #!/bin/bash
+const path = require('path');
+const currentFilePath = __filename;
+const currentDirectory = path.dirname(currentFilePath);
+
+console.log('Path del archivo actual:', currentDirectory);
+
 
 # Navega hasta el directorio de tu aplicación
 cd /app

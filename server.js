@@ -12,6 +12,11 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
+const currentFilePath = __filename;
+const currentDirectory = path.dirname(currentFilePath);
+
+console.log('Path del archivo actual:', currentDirectory);
+
 
 app.use(cors({
   origin: '*',
