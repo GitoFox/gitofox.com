@@ -23,6 +23,8 @@ app.use((req, res, next) => {
   next();
 });
 
+console.log('GITHUB_WEBHOOK_SECRET:', process.env.GITHUB_WEBHOOK_SECRET);
+
 // Middleware para verificar la firma de la solicitud
 app.use('/github-webhook', express.json({
   verify: (req, res, buf) => {
@@ -38,9 +40,9 @@ app.use('/github-webhook', express.json({
 
 // Ruta para manejar la notificación de webhook
 app.post('/github-webhook', (req, res) => {
-  git('/home/ubuntu/gitofox.com').pull((err, update) => {
+  git('/app').pull((err, update) => {
     if (update && update.summary.changes) {
-      exec('/home/ubuntu/gitofox.com/script.sh', execCallback);
+      exec('/script.sh', execCallback);
     }
   });
   res.status(200).send('OK');

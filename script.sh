@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navega hasta el directorio de tu aplicación
-cd /home/ubuntu/gitofox.com
+cd /app
 
 # Descarga los últimos cambios
 git pull
