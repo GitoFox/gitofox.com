@@ -12,12 +12,6 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-const currentFilePath = __filename;
-const currentDirectory = path.dirname(currentFilePath);
-
-console.log('Path del archivo actual:', currentDirectory);
-
-
 app.use(cors({
   origin: '*',
   exposedHeaders: 'Referer'
@@ -27,36 +21,6 @@ app.use((req, res, next) => {
   res.set('Cache-Control', 'no-store');
   next();
 });
-
-console.log('GITHUB_WEBHOOK_SECRET:', process.env.GITHUB_WEBHOOK_SECRET);
-
-// Middleware para verificar la firma de la solicitud
-app.use('/github-webhook', express.json({
-  verify: (req, res, buf) => {
-    const signature = req.headers['x-hub-signature-256'] || '';
-    const hmac = crypto.createHmac('sha256', process.env.GITHUB_WEBHOOK_SECRET);
-    const digest = Buffer.from('sha256=' + hmac.update(buf).digest('hex'), 'utf8');
-    const checksum = Buffer.from(signature, 'utf8');
-    if (checksum.length !== digest.length || !crypto.timingSafeEqual(digest, checksum)) {
-      return res.status(403).send('Signature not verified');
-    }
-  }
-}));
-
-// Ruta para manejar la notificación de webhook
-app.post('/github-webhook', (req, res) => {
-  git('/app').pull((err, update) => {
-    if (update && update.summary.changes) {
-      exec('/script.sh', execCallback);
-    }
-  });
-  res.status(200).send('OK');
-});
-
-function execCallback(err, stdout, stderr) {
-  if (stdout) console.log(stdout);
-  if (stderr) console.log(stderr);
-}
 
 
 // Ruta para buscar a un encuestador por su RUT
