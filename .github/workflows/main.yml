@@ -19,4 +19,7 @@ jobs:
         username: ubuntu
         key: ${{ secrets.SSHKEY }}
         script: |
-          ssh -i "Prueba_DESUC.pem" ubuntu@ec2-3-211-226-236.compute-1.amazonaws.com "cd /home/ubuntu/gitofox.com && git pull origin main && docker-compose down && docker-compose up --build -d"
+          cd /home/ubuntu/gitofox.com  
+          git pull origin main  
+          docker-compose down  
+          docker-compose up --build -d
