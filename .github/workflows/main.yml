@@ -2,7 +2,8 @@ name: CI/CD pipeline
 on:
   push:
     branches:
-      - main  
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -11,15 +12,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Execute commands over ssh
+    - name: Execute commands over SSH
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ubuntu
         key: ${{ secrets.SSHKEY }}
         script: |
-          ssh -i "Prueba_DESUC.pem" ubuntu@ec2-3-211-226-236.compute-1.amazonaws.com
-          cd /home/ubuntu/gitofox.com  
-          git pull origin main  
-          docker-compose down  
-          docker-compose up --build -d
+          ssh -i "Prueba_DESUC.pem" ubuntu@ec2-3-211-226-236.compute-1.amazonaws.com "cd /home/ubuntu/gitofox.com && git pull origin main && docker-compose down && docker-compose up --build -d"
