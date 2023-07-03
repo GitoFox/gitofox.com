@@ -15,10 +15,11 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
+        username: ubuntu
         key: ${{ secrets.SSHKEY }}
         script: |
-          cd /app  
+          ssh -i "Prueba_DESUC.pem" ubuntu@ec2-3-211-226-236.compute-1.amazonaws.com
+          cd /home/ubuntu/gitofox.com  
           git pull origin main  
           docker-compose down  
-          docker-compose up --build -d  
+          docker-compose up --build -d
